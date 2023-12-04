@@ -26,22 +26,23 @@ public class Day4Input2 {
         for (int i = 0; i < lines.size(); i++) {
             LineStats lineStats = lines.get(i);
             int gameToIncrement = findNumber(lineStats.getLine());
+            sum = sum + (lineStats.getSum()*lineStats.getSum()+  lineStats.getSum() );
             //How many games to increment
             for (int j = i + 1; j <= gameToIncrement+1; j++) {
                 LineStats lineStatsToUpdate = lines.get(j);
                 int sum1 = lineStatsToUpdate.getSum();
                 sum1 = sum1 + 1;
-                lineStatsToUpdate.setSum(sum1+1);
+                lineStatsToUpdate.setSum(sum1);
                 System.out.println("setting game  " + lineStatsToUpdate.getGameNumber() + " sum1 " + sum1);
             }
         }
 
-        for (LineStats lineStats : lines) {
-            int linesSum = lineStats.getSum();
-            System.out.println(lineStats.getGameNumber() + " " + linesSum);
-                sum = sum +linesSum;
-
-        }
+//        for (LineStats lineStats : lines) {
+//            int linesSum = lineStats.getSum();
+//            System.out.println(lineStats.getGameNumber() + " " + linesSum);
+//                sum = sum +linesSum;
+//
+//        }
 
         sum ++; //for the first game
         System.out.println("sum " + sum);
