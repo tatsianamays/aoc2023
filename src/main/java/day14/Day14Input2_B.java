@@ -3,11 +3,10 @@ package day14;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class Day14Input2 {
+public class Day14Input2_B {
 
     public static void main(String[] args) throws FileNotFoundException {
 
@@ -32,6 +31,9 @@ public class Day14Input2 {
         while(iterations > 0){
             result = iterateOverMultiples(charArray);
             iterations--;
+            if(iterations < 1000 ){
+                System.out.println(  iterations + " " +     findNumber(result));
+            }
         }
         System.out.println(        findNumber(result));
 
