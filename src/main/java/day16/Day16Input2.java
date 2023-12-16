@@ -1,14 +1,11 @@
 package day16;
 
-import day10.Direction;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 
-
-public class Day16Input1 {
+public class Day16Input2 {
 
     public static void main(String[] args) throws FileNotFoundException {
 
@@ -23,8 +20,45 @@ public class Day16Input1 {
             grid[i++] = line.toCharArray();
 
         }
-        boolean[][] visited =        findNumber(grid);
-        printArray(visited);
+        //Try each x and y
+          /*
+        0 ----------x
+        |
+        |
+        |
+        |y
+
+           */
+        int max = 0;
+        for(int y = -1; y < grid.length; y++) {
+
+                    boolean[][] visited =        findNumber(grid, -1, y, 1, 0);
+                    int current  = count(visited);
+                    if(current > max) {
+                        max = current;
+                    }
+
+
+
+
+        }
+
+        for(int x = -1; x < grid[0].length; x++) {
+
+            boolean[][] visited = findNumber(grid, x, -1, 0, 1);
+            int current  =count(visited);
+            if(current > max) {
+                max = current;
+            }
+
+        }
+
+        System.out.println("sum " + max);
+
+    }
+
+    private static int count(boolean[][] visited) {
+        int sum = 0;
         for (int j = 0; j < visited.length; j++) {
             for (int k = 0; k < visited[0].length; k++) {
                 if(visited[j][k]) {
@@ -32,27 +66,26 @@ public class Day16Input1 {
                 }
             }
         }
-        System.out.println("sum " + sum);
-
+        System.out.println(sum);
+        return sum;
     }
 
 
-    public static boolean[][] findNumber(char[][] grid) {
+    public static boolean[][] findNumber(char[][] grid, int startX, int startY, int startNextXmove, int startNextYmove) {
 
-        int currentX = 0;
-        int currentY = 0;
-        int nextXmove = 0;
-        int nextYmove = 1;
+        int currentX = startX;
+        int currentY = startY;
+        int nextXmove = startNextXmove;
+        int nextYmove = startNextYmove;
 
         Queue<int[]> pq = new ArrayDeque<>();
         pq.add(new int[]{currentX, currentY, nextXmove, nextYmove});
         int m = grid.length, n = grid[0].length;
         boolean[][] visited = new boolean[m][n];
+        Map<Coordinates, List<Coordinates>> directions = new HashMap<>();
 
-        visited[currentX][currentY] = true;
         while (!pq.isEmpty()) {
             int[] cur = pq.poll(); //current longest step
-            printArray(visited);
             currentX = cur[0];
             currentY =  cur[1];
             nextXmove =  cur[2];
@@ -61,12 +94,13 @@ public class Day16Input1 {
             int x = currentX + nextXmove;
             int y = currentY + nextYmove;
 
-            System.out.println("cur " + cur[0] + " " + cur[1] + "  " + cur[2] + "  " + cur[3]);
-            System.out.println("x " + x + " y " + y);
-
             //Check the bounderies
-            if (y < 0 || y == m || x < 0 || x == n ) continue;
+            if (y < 0 || y == m || x < 0 || x == n  ) continue;
             visited[y][x] = true;
+            boolean hasTraveled = isHasTraveled(directions, x, y, nextXmove, nextYmove);
+            if(hasTraveled) {
+                continue;
+            }
             char sign = grid[y][x];
              /*
         0 ----------x
@@ -88,6 +122,10 @@ public class Day16Input1 {
 
        */
             if(sign == '|' && nextXmove != 0) {
+                //Check if travvled in this direciton
+                for(int i = 0; i < 4; i++) {
+
+                }
                 //Split
                 pq.add(new int[]{x, y, 0, 1});
                 pq.add(new int[]{x, y, 0, -1});
@@ -118,6 +156,24 @@ public class Day16Input1 {
 
         }
         return visited;
+    }
+
+    private static boolean isHasTraveled(Map<Coordinates, List<Coordinates>> directions, int x, int y, int nextXmove, int nextYmove) {
+        boolean hasTraveled = false;
+        List<Coordinates> listOfExistingDirecitons = directions.get(new Coordinates(x, y));
+        if(listOfExistingDirecitons != null) {
+            for(Coordinates coordinates : listOfExistingDirecitons) {
+                if(coordinates.getX() == nextXmove && coordinates.getY() == nextYmove) {
+                    hasTraveled = true;
+                    break;
+                }
+            }
+        }else{
+            listOfExistingDirecitons = new ArrayList<>();
+            listOfExistingDirecitons.add(new Coordinates(nextXmove, nextYmove));
+            directions.put(new Coordinates(x, y), listOfExistingDirecitons);
+        }
+        return hasTraveled;
     }
 
     private static void printArray(boolean[][] existingRoute) {
